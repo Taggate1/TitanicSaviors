@@ -1,16 +1,25 @@
-# This is a sample Python script.
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
 
-# Press ⌃F5 to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+# Read in the data given
+train_data = pd.read_csv('train.csv')
+test_data = pd.read_csv('test.csv')
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+y = train_data["Survived"]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Define the features
+features = ["Pclass", "Sex", "SibSp", "Parch"]
+X = pd.get_dummies(train_data[features])
+X_test = pd.get_dummies(test_data[features])
+
+# initiate the model
+model = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=1)
+model.fit(X, y)
+predictions = model.predict(X_test)
+
+output = pd.DataFrame({'PassengerId': test_data.PassengerId, 'Survived': predictions})
+output.to_csv('final_answers.csv', index=False)
+print("Your answers was successfully saved!")
+
